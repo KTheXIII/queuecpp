@@ -1,5 +1,5 @@
 /**
- * @file   buffer.hpp
+ * @file   queue.hpp
  * @author Pratchaya Khansomboon (pratchaya.k.git@gmail.com)
  * @brief  Basic fixed size queue implementation with iterator.
  * @date   2022-03-20
@@ -25,7 +25,8 @@ class queue {
         using pointer           = pointer_type;
         using reference         = reference_type;
 
-        constexpr iterator_base(pointer buffer, std::size_t const& ptr, std::size_t const& max, std::size_t const& end)
+        constexpr iterator_base(pointer buffer, std::size_t const& ptr,
+                                std::size_t const& max, std::size_t const& end)
             : m_buffer(buffer), m_ptr(ptr), m_max(max), m_end(end) {}
 
         constexpr auto operator*() const -> reference { return m_buffer[m_ptr]; }
@@ -173,6 +174,7 @@ class queue {
     using const_ref_type = T const&;
     auto operator[](std::size_t const& offset) -> ref_type { return m_buffer[(m_tail + m_max + offset) % m_max]; }
     auto operator[](std::size_t const& offset) const -> const_ref_type { return m_buffer[(m_tail + m_max + offset) % m_max]; }
+
   private:
     static auto inc_wrap(std::size_t& value, std::size_t const& max) -> std::size_t const& {
         value = (value + 1) % max;
@@ -184,8 +186,8 @@ class queue {
     }
 
   private:
-    std::size_t m_max   = SIZE + 1;
     T           m_buffer[SIZE + 1];  // allocate extra space for end iterator
+    std::size_t m_max   = SIZE + 1;
     std::size_t m_head  = 0;
     std::size_t m_tail  = SIZE;
     std::size_t m_size  = 0;
