@@ -142,6 +142,10 @@ class queue {
         else
             ++m_size;
     }
+    auto enq_keep(T const& value) -> void {
+        if (m_head == m_tail) return;
+        enq(value);
+    }
     auto deq() -> T {
         auto const ret = m_buffer[m_tail];
         if (m_tail != m_head) {
