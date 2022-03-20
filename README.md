@@ -1,6 +1,6 @@
-# itercpp
+# queue with iterator C++
 
-Writing iterator in C++
+FIFO datastructure in C++ with iterator.
 
 ## Development
 
