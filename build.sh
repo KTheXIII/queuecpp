@@ -9,6 +9,7 @@ cpp_version=-std=c++17
 warnings="-Wall -Wextra -Wpedantic -Werror"
 input_file=$1
 target_dir=bin
+include_dir="-I./"
 
 mkdir -p $target_dir
 
