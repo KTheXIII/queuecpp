@@ -10,7 +10,6 @@
 
 #include <cstdint>
 #include <iterator>
-#include <vector>
 
 namespace nerv {
 // Fixed size queue buffer, FIFO

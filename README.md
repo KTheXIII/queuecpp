@@ -1,4 +1,4 @@
-# queue with iterator C++
+# queue with iterator in C++
 
 FIFO datastructure in C++ with iterator.
 
