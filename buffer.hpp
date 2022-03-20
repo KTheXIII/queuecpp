@@ -41,6 +41,14 @@ class queue {
             return tmp;
         }
 
+        constexpr friend auto operator==(iterator_base const& a, iterator_base const& b) -> bool {
+            return a.m_ptr == b.m_ptr;
+        }
+        constexpr friend auto operator!=(iterator_base const& a, iterator_base const& b) -> bool {
+            return !(a == b);
+        }
+
+        // bidirectional iterator requirements
         constexpr auto operator--() -> iterator_base& {
             m_ptr = (m_ptr + 1) % m_max;
             return *this;
@@ -49,13 +57,6 @@ class queue {
             auto tmp = *this;
             --(*this);
             return tmp;
-        }
-
-        constexpr friend auto operator==(iterator_base const& a, iterator_base const& b) -> bool {
-            return a.m_ptr == b.m_ptr;
-        }
-        constexpr friend auto operator!=(iterator_base const& a, iterator_base const& b) -> bool {
-            return !(a == b);
         }
 
         // random access iterator requirements
