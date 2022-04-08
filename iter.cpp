@@ -39,5 +39,28 @@ auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[])
     //});
     //std::cout << "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄" << "\n";
 
+    std::cout << "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄" << "\n";
+    auto it2 = std::rbegin(test);
+    for (auto i = 0; i < SIZE; i++) {
+        auto value = it2++;
+        std::cout << *value;
+        if (i < SIZE - 1) std::cout << " · ";
+        else std::cout << "\n";
+    }
+    std::cout << "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄" << "\n";
+    auto it3 = std::rbegin(test);
+    for (auto i = 0; i < SIZE; i++) {
+        auto value = it3;
+        std::cout << *value;
+        it3 -= 2;
+        if (it3 == std::rend(test)) {
+            std::cout << "\n";
+            break;
+        }
+        if (i < SIZE - 1) std::cout << " · ";
+        else std::cout << "\n";
+    }
+    std::cout << "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄" << "\n";
+
     return 0;
 }

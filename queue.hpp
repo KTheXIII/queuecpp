@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <iterator>
+#include <iostream>
 
 namespace nerv {
 // Fixed size queue buffer, FIFO
@@ -61,7 +62,8 @@ class queue {
 
         // random access iterator requirements
         constexpr auto operator+=(difference_type const& n) -> iterator_base& {
-            if ((n > 0 && n > m_max - 1) || (n < 0 && -n > m_max - 1))  // sets the iterator to end iterator
+            if ((n > 0 && n > difference_type(m_max - 1)) ||
+                (n < 0 && -n > difference_type(m_max - 1)))  // sets the iterator to end iterator
                 m_ptr = (m_ptr + m_max + m_max - 1) % m_max;
             else                                                        // do normal addition with wrap
                 m_ptr = (m_ptr + m_max + n) % m_max;
@@ -147,9 +149,10 @@ class queue {
   public:
     auto enq(T const& value) -> void {
         m_buffer[m_head] = value;
-        if (queue::dec_wrap(m_head, m_max) == m_tail)
+        queue::dec_wrap(m_head, m_max);
+        if (m_head == m_tail)
             queue::dec_wrap(m_tail, m_max);
-        else
+        if (m_size < m_max)
             ++m_size;
     }
     auto enq_keep(T const& value) -> void {
@@ -165,14 +168,21 @@ class queue {
         return ret;
     }
 
+    auto capacity() const -> std::size_t { return SIZE; }
     auto size() const -> std::size_t { return m_size; }
     auto back() -> T { return m_buffer[m_tail]; }
     auto front() -> T { return m_buffer[(m_head + 1) % m_max]; }
 
     using ref_type       = T&;
     using const_ref_type = T const&;
-    auto operator[](std::size_t const& offset) -> ref_type { return m_buffer[(m_tail + m_max + offset) % m_max]; }
-    auto operator[](std::size_t const& offset) const -> const_ref_type { return m_buffer[(m_tail + m_max + offset) % m_max]; }
+    auto operator[](std::size_t const& offset) -> ref_type { return at_front(offset); }
+    auto operator[](std::size_t const& offset) const -> const_ref_type { return at_front(offset); }
+
+    auto at_front(std::size_t const& offset) -> ref_type { return m_buffer[(m_tail + m_max - offset) % m_max]; }
+    auto at_front(std::size_t const& offset) const -> const_ref_type { return m_buffer[(m_tail + m_max - offset) % m_max]; }
+
+    auto at_back(std::size_t const& offset) -> ref_type { return m_buffer[(m_head + m_max + offset) % m_max]; }
+    auto at_back(std::size_t const& offset) const -> const_ref_type { return m_buffer[(m_head + m_max + offset) % m_max]; }
 
   private:
     static auto inc_wrap(std::size_t& value, std::size_t const& max) -> std::size_t const& {
