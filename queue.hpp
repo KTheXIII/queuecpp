@@ -178,18 +178,34 @@ class queue {
     auto operator[](std::size_t const& offset) -> ref_type { return at_front(offset); }
     auto operator[](std::size_t const& offset) const -> const_ref_type { return at_front(offset); }
 
-    auto at_front(std::size_t const& offset) -> ref_type { return m_buffer[(m_tail + m_max - offset) % m_max]; }
-    auto at_front(std::size_t const& offset) const -> const_ref_type { return m_buffer[(m_tail + m_max - offset) % m_max]; }
+    auto at_front(std::size_t const& offset) -> ref_type {
+        return m_buffer[index_front(offset)];
+    }
+    auto at_front(std::size_t const& offset) const -> const_ref_type {
+        return m_buffer[index_front(offset)];
+    }
 
-    auto at_back(std::size_t const& offset) -> ref_type { return m_buffer[(m_head + m_max + offset) % m_max]; }
-    auto at_back(std::size_t const& offset) const -> const_ref_type { return m_buffer[(m_head + m_max + offset) % m_max]; }
+    auto at_back(std::size_t const& offset) -> ref_type {
+        return m_buffer[index_back(offset)];
+    }
+    auto at_back(std::size_t const& offset) const -> const_ref_type {
+        return m_buffer[index_back(offset)];
+    }
 
   private:
-    static auto inc_wrap(std::size_t& value, std::size_t const& max) -> std::size_t const& {
+    auto index_front(std::size_t const& offset) const -> std::size_t {
+        return ((m_head - 1) + m_max + m_size - offset) % m_max;
+    }
+    auto index_back(std::size_t const& offset) const -> std::size_t {
+        return ((m_head + 1) + m_max + offset) % m_max;
+    }
+
+  private:
+    static auto inc_wrap(std::size_t& value, std::size_t const& max) -> std::size_t {
         value = (value + 1) % max;
         return value;
     }
-    static auto dec_wrap(std::size_t& value, std::size_t const& max) -> std::size_t const& {
+    static auto dec_wrap(std::size_t& value, std::size_t const& max) -> std::size_t {
         value = (value + max - 1) % max;
         return value;
     }
