@@ -192,13 +192,14 @@ class queue {
         return m_buffer[index_back(offset)];
     }
 
-  private:
     auto index_front(std::size_t const& offset) const -> std::size_t {
-        return ((m_head - 1) + m_max + m_size - offset) % m_max;
+        return (m_head + m_max + m_size - offset) % m_max;
     }
     auto index_back(std::size_t const& offset) const -> std::size_t {
         return ((m_head + 1) + m_max + offset) % m_max;
     }
+
+    auto get_tail() const -> std::size_t { return m_tail; }
 
   private:
     static auto inc_wrap(std::size_t& value, std::size_t const& max) -> std::size_t {

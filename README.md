@@ -2,32 +2,20 @@
 
 FIFO datastructure in C++ with iterator.
 
-## Development
+## Requirements
 
-Make `shell` scripts into an executable
+  - [googletest](https://github.com/google/googletest)
 
-```
-chmod +x ./build.sh
-```
+### Setup from source
 
-```
-chmod +x ./run.sh
-```
+`googletest` from source basic guide. This requires `cmake`. The following steps
+below builds the googletest library.
 
-Run
+  1. Clone the repository.
+  2. Run `cmake -S . -B build`
+  3. `cd buid && make`
 
-```
-./run.sh iter.cpp
-```
+The `CPLUS_INCLUDE_PATH` needs to point to the include path in the `googletest` repo.
 
-Build
+And the `LIBRARY_PATH` needs to point to the lib in the build directory.
 
-```
-./build.sh iter.cpp
-```
-
-Use `bear` to generate the `compile_commands.json` for the lsp configuration.
-
-```
-bear -- ./build.sh iter.cpp
-```

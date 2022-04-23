@@ -2,23 +2,23 @@
 
 set -e
 
-out_name=$1
-out_name="${out_name%.*}"
+bin="bin"
+obj="obj"
 
-cpp_version=-std=c++17
-warnings="-Wall -Wextra -Wpedantic -Werror"
-input_file=$1
+in="${1}"
+out="${in%.*}"
+out="${out##*/}"
+
+cpp_version=-std=c++20
+warnings="-Wall -Wextra -Wpedantic -Werror -Wno-missing-field-initializers"
 target_dir=bin
-include_dir="-I./"
+include_dir="-I."
+library="-lgtest"
+compile_flags="${cpp_version} ${warnings} ${include_dir} ${library}"
 
-mkdir -p $target_dir
+mkdir -p ${bin}
+mkdir -p ${obj}
 
-echo "Building ${out_name}..."
-
-c++ $cpp_version $warnings $input_file -o $target_dir/$out_name
-
-green=$"\u001b[32m"
-reset=$"\u001b[0m"
-
-echo "Done!\n"
+# compile
+c++ ${compile_flags} ${in} -o ${bin}/${out}
 
