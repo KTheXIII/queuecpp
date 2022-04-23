@@ -13,7 +13,7 @@ below builds the googletest library.
 
   1. Clone the repository.
   2. Run `cmake -S . -B build`
-  3. `cd buid && make`
+  3. `cmake --build build -j4`
 
 The `CPLUS_INCLUDE_PATH` needs to point to the include path in the `googletest` repo.
 
