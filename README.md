@@ -2,7 +2,13 @@
 
 FIFO datastructure in C++ with iterator.
 
-## Requirements
+## Usage
+
+Require C++17 or later.
+
+## Development
+
+### Requirements
 
   - [googletest](https://github.com/google/googletest)
 

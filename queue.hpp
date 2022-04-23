@@ -182,8 +182,8 @@ class queue {
 
     using ref_type       = T&;
     using const_ref_type = T const&;
-    auto operator[](std::size_t const& offset) -> ref_type { return at_front(offset); }
-    auto operator[](std::size_t const& offset) const -> const_ref_type { return at_front(offset); }
+    auto operator[](std::size_t const& offset) -> ref_type { return at_back(offset); }
+    auto operator[](std::size_t const& offset) const -> const_ref_type { return at_back(offset); }
 
     auto at_front(std::size_t const& offset) -> ref_type {
         return m_buffer[index_front(offset)];
