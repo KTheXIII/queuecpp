@@ -205,8 +205,8 @@ class ring {
         return (m_tail + m_max - offset) % m_max;
     }
     auto index_back(std::size_t const& offset) const -> std::size_t {
-        auto const index = m_head == m_tail ? m_head : m_head + 1;
-        return (index + m_max - offset) % m_max;
+        auto const index = m_size == 0 ? m_head : m_head + 1;
+        return (index + m_max + offset) % m_max;
     }
 
   private:

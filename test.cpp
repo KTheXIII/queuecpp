@@ -54,6 +54,26 @@ TEST(BeginEnd, Full) {
     ASSERT_EQ(end.ptr(), 1);
 }
 
+TEST(Layout, FullFront) {
+    nrv::ring<float, 10> ring{};
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        ring.enq(i);
+    }
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        ASSERT_EQ(i, ring.at_front(i));
+    }
+}
+
+TEST(Layout, FullBack) {
+    nrv::ring<float, 10> ring{};
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        ring.enq(i);
+    }
+    for (std::size_t i = ring.capacity() - 1; i > -1; i++) {
+        ASSERT_EQ(i, ring.at_back(i));
+    }
+}
+
 TEST(Is, Empty) {
     nrv::ring<float, 4> ring{};
     ASSERT_TRUE(ring.size() == 0);
@@ -146,6 +166,28 @@ TEST(Sum, Override) {
 
 auto main(std::int32_t argc, char const* argv[]) -> std::int32_t {
     testing::InitGoogleTest(&argc, (char**)argv);
+
+    nrv::ring<double, 4> ring{};
+    ring.enq(1);
+    ring.enq(2);
+    ring.enq(3);
+    ring.enq(4);
+    ring.enq(4);
+
+    std::cout << "FROM_BACK: \n";
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        std::cout << ring[i];
+        if (i < ring.capacity() - 1) std::cout << ", ";
+    }
+    std::cout << "\n";
+
+    std::cout << "FROM_FRONT: \n";
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        std::cout << ring.at_front(i);
+        if (i < ring.capacity() - 1) std::cout << ", ";
+    }
+    std::cout << "\n";
+
     return RUN_ALL_TESTS();
 }
 
