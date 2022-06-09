@@ -1,7 +1,7 @@
 /**
- * @file   queue.hpp
+ * @file   ring.hpp
  * @author Pratchaya Khansomboon (pratchaya.k.git@gmail.com)
- * @brief  Basic fixed size queue implementation with iterator.
+ * @brief  Basic fixed size ring buffer implementation with iterator.
  * @date   2022-03-20
  *
  * @copyright Copyright (c) 2022
@@ -12,10 +12,10 @@
 #include <iterator>
 #include <iostream>
 
-namespace nerv {
-// Fixed size queue buffer, FIFO
+namespace nrv {
+// Fixed size ring buffer, FIFO
 template <typename T, std::size_t SIZE>
-class queue {
+class ring {
   public:
     template <typename pointer_type, typename reference_type>
     struct iterator_base {
@@ -142,11 +142,13 @@ class queue {
         auto const e = m_head == m_tail ? (m_head + 1) % m_max : m_head;
         return iterator(m_buffer, e, m_max, e);
     }
-    auto cbegin() const -> const_iterator { return const_iterator(m_buffer, m_tail, m_max, m_head); }
-    auto cend()   const -> const_iterator {
+    auto begin() const -> const_iterator { return const_iterator(m_buffer, m_tail, m_max, m_head); }
+    auto end()   const -> const_iterator { 
         auto const e = m_head == m_tail ? (m_head + 1) % m_max : m_head;
         return const_iterator(m_buffer, e, m_max, e);
     }
+    auto cbegin() const -> const_iterator { return begin(); }
+    auto cend()   const -> const_iterator { return end();   }
 
     auto rbegin() -> reverse_iterator { return reverse_iterator(end()); }
     auto rend()   -> reverse_iterator { return reverse_iterator(begin()); }
@@ -156,20 +158,20 @@ class queue {
   public:
     auto enq(T const& value) -> void {
         m_buffer[m_head] = value;
-        queue::dec_wrap(m_head, m_max);
+        ring::dec_wrap(m_head, m_max);
         if (m_head == m_tail)
-            queue::dec_wrap(m_tail, m_max);
+            ring::dec_wrap(m_tail, m_max);
         if (m_size < m_max)
             ++m_size;
     }
     auto enq_keep(T const& value) -> void {
-        if (m_head == m_tail) return;
+        if (m_size == m_max - 1) return;
         enq(value);
     }
     auto deq() -> T {
         auto const ret = m_buffer[m_tail];
         if (m_tail != m_head) {
-            queue::dec_wrap(m_tail, m_max);
+            ring::dec_wrap(m_tail, m_max);
             --m_size;
         }
         return ret;
@@ -224,5 +226,5 @@ class queue {
     std::size_t m_tail  = 0;
     std::size_t m_size  = 0;
 };
-}
+}  // namespace nrv
 
