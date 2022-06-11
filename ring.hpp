@@ -177,7 +177,7 @@ class ring {
         return ret;
     }
 
-    auto capacity() const -> std::size_t { return SIZE; }
+    constexpr auto capacity() const -> std::size_t { return SIZE; }
     auto size() const -> std::size_t { return m_size; }
     auto back() -> T { return m_buffer[m_tail]; }
     auto front() -> T { return m_buffer[(m_head + 1) % m_max]; }

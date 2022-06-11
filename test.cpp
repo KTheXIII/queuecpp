@@ -164,6 +164,29 @@ TEST(Sum, Override) {
     ASSERT_EQ(sum, 9.0f);
 }
 
+TEST(Sum, FillRandomFillKnown) {
+    nrv::ring<float, 8> ring{};
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        ring.enq(1);
+    }
+    ring.enq(3);
+    ring.enq(8);
+    ring.enq(12);
+    ring.enq(1298);
+    ring.enq(39);
+    ring.enq(32);
+    ring.enq(3318);
+    ring.enq(32);
+    ring.enq(310);
+
+    for (std::size_t i = 0; i < ring.capacity() - 1; i++) {
+        ring.enq(1);
+    }
+
+    auto sum = std::accumulate(std::begin(ring), std::end(ring), 0.0f, std::plus<>());
+    ASSERT_EQ(sum, 8.0f);
+}
+
 auto main(std::int32_t argc, char const* argv[]) -> std::int32_t {
     testing::InitGoogleTest(&argc, (char**)argv);
 
