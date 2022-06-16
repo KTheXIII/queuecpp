@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <iostream>
 #include <numeric>
+#include <algorithm>
 
 #include "gtest/gtest.h"
 #include "ring.hpp"
@@ -16,9 +17,11 @@ TEST(HeadTail, Empty) {
 }
 
 TEST(HeadTail, Full) {
-    nrv::ring<float, 2> ring{};
+    nrv::ring<float, 4> ring{};
     ring.enq(1);
     ring.enq(2);
+    ring.enq(3);
+    ring.enq(4);
 
     auto front = ring.index_front(0);
     auto back  = ring.index_back(0);
@@ -28,25 +31,27 @@ TEST(HeadTail, Full) {
 }
 
 TEST(BeginEnd, Empty) {
-    nrv::ring<float, 2> ring{};
+    nrv::ring<float, 4> ring{};
     auto begin = ring.begin();
     auto end = ring.end();
     ASSERT_EQ(begin.ptr(), 0);
     ASSERT_EQ(end.ptr(), 1);
 }
 TEST(BeginEnd, Partial) {
-    nrv::ring<float, 2> ring{};
+    nrv::ring<float, 4> ring{};
     ring.enq(1);
+
     auto begin = ring.begin();
     auto end = ring.end();
 
     ASSERT_EQ(begin.ptr(), 0);
-    ASSERT_EQ(end.ptr(), 2);
+    ASSERT_EQ(end.ptr(), 4);
 }
 TEST(BeginEnd, Full) {
-    nrv::ring<float, 2> ring{};
-    ring.enq(1);
-    ring.enq(2);
+    nrv::ring<float, 4> ring{};
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        ring.enq(double(i));
+    }
 
     auto begin = ring.begin();
     auto end = ring.end();
@@ -179,7 +184,7 @@ TEST(Sum, FillRandomFillKnown) {
     ring.enq(32);
     ring.enq(310);
 
-    for (std::size_t i = 0; i < ring.capacity() - 1; i++) {
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
         ring.enq(1);
     }
 
@@ -187,30 +192,98 @@ TEST(Sum, FillRandomFillKnown) {
     ASSERT_EQ(sum, 8.0f);
 }
 
-auto main(std::int32_t argc, char const* argv[]) -> std::int32_t {
+TEST(Iterator, MinMax) {
+    nrv::ring<std::int32_t, 8> ring{};
+    for (std::size_t i = 0; i < ring.capacity(); i++) {
+        ring.enq(i);
+    }
+    auto it = std::rbegin(ring);
+    for (auto i = 0; i < 8; i++) {
+        it -= 1;
+    }
+}
+
+auto main([[maybe_unused]]std::int32_t argc, [[maybe_unused]]char const* argv[]) -> std::int32_t {
     testing::InitGoogleTest(&argc, (char**)argv);
 
-    nrv::ring<double, 4> ring{};
-    ring.enq(1);
-    ring.enq(2);
-    ring.enq(3);
-    ring.enq(4);
-    ring.enq(4);
+    //std::size_t n = 3;
+    //double test[4]{1, 2, 3, 4};
+    //nrv::ring<double, 4> ring{};
+    //ring.enq(1);
+    //ring.enq(2);
+    //ring.enq(3);
+    //ring.enq(4);
 
-    std::cout << "FROM_BACK: \n";
-    for (std::size_t i = 0; i < ring.capacity(); i++) {
-        std::cout << ring[i];
-        if (i < ring.capacity() - 1) std::cout << ", ";
-    }
-    std::cout << "\n";
+    //auto index = (n + 4 - 0) % 4;
+    //std::cout << ring[0] << "::" << test[index] << "\n";
 
-    std::cout << "FROM_FRONT: \n";
-    for (std::size_t i = 0; i < ring.capacity(); i++) {
-        std::cout << ring.at_front(i);
-        if (i < ring.capacity() - 1) std::cout << ", ";
-    }
-    std::cout << "\n";
+    //n = 1;
+    //ring.enq(5);
+    //ring.enq(5);
+
+    //test[n] = 5;
+    //index = (n + 4 - 1) % 4;
+    ////std::cout << ring[1] << "::" << test[index] << "\n";
+
+    //std::cout << "position\n";
+    //std::cout << index << "::::" << ring.index_back(1) << "\n";
+
+
+    //std::cout << "FROM_BACK: \n";
+    //for (std::size_t i = 0; i < ring.capacity(); i++) {
+    //    std::cout << ring[i];
+    //    if (i < ring.capacity() - 1) std::cout << ", ";
+    //}
+    //std::cout << "\n";
+
+    //std::cout << "FROM_FRONT: \n";
+    //for (std::size_t i = 0; i < ring.capacity(); i++) {
+    //    std::cout << ring.at_front(i);
+    //    if (i < ring.capacity() - 1) std::cout << ", ";
+    //}
+    //std::cout << "\n";
 
     return RUN_ALL_TESTS();
+
+
+    //constexpr std::size_t max = 8;
+    //nrv::ring<double, max> ring{};
+    //double ring_buffer[max]{};
+    //std::size_t n = 0;
+    //for (std::size_t i = 0; i < 812; i++) {
+    //    ring.enq(i);
+    //    ring_buffer[n] = i;
+    //    n = (n + 1) % max;
+    //}
+
+    //std::cout << "BACK:\n";
+    //for (std::size_t i = 0; i < max; i++) {
+    //    auto index = (n + max - i - 1) % max;
+    //    std::cout << ring_buffer[index];
+    //    if (i < max - 1) std::cout << " | ";
+    //}
+    //std::cout << "\n";
+
+    //for (std::size_t i = 0; i < max; i++) {
+    //    std::cout << ring.at_back(i);
+    //    if (i < max - 1) std::cout << " | ";
+    //}
+    //std::cout << "\n";
+
+    //std::cout << "FRONT:\n";
+    //for (std::size_t i = 0; i < max; i++) {
+    //    auto index = (n + i) % max;
+    //    std::cout << ring_buffer[index];
+    //    if (i < max - 1) std::cout << " | ";
+    //}
+    //std::cout << "\n";
+
+    //for (std::size_t i = 0; i < max; i++) {
+    //    std::cout << ring.at_front(i);
+    //    if (i < max - 1) std::cout << " | ";
+    //}
+    //std::cout << "\n";
+
+    //return 0;
 }
 
